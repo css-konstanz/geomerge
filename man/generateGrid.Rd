@@ -34,14 +34,10 @@ Andrew M. Linke, Karsten Donnay. (2017). "Scale Variability Misclassification: T
 \code{\link{geomerge-package}}, \code{\link{geomerge}}
 }
 \examples{
-\dontrun{
-library(sp)
+require(sp)
 data(geomerge)
 
-# Local CRS for Nigeria
-localCRS <- CRS("+init=epsg:26391")
-
-# Generate grid with 10 km cell size
-counties.grid <- generateGrid(counties,10000,local.CRS = localCRS)
-}
+# Generate grid with 10 km cell size in local CRS for Nigeria
+counties.grid <- generateGrid(counties,10000,local.CRS=CRS("+init=epsg:26391"),
+                              silent=TRUE)
 }

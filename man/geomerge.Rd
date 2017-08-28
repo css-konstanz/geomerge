@@ -18,38 +18,31 @@ The functions \code{summary}, \code{print}, \code{plot} overload the standard ou
 }
 \references{
 Andrew M. Linke, Karsten Donnay. (2017). "Scale Variability Misclassification: The Impact of Spatial Resolution on Effect Estimates in the Geographic Analysis of Foreign Aid and Conflict." Paper presented at the \emph{International Studies Association Annual Meeting}, February 22-25 2017, Baltimore.
-}\author{  Karsten Donnay and Andrew M. Linke.}\seealso{\code{\link{geomerge-package}}, \code{\link{print.geomerge}}, \code{\link{plot.geomerge}}, \code{\link{summary.geomerge}}, \code{\link{generateGrid}}}\examples{\dontrun{
+}\author{  Karsten Donnay and Andrew M. Linke.}\seealso{\code{\link{geomerge-package}}, \code{\link{print.geomerge}}, \code{\link{plot.geomerge}}, \code{\link{summary.geomerge}}, \code{\link{generateGrid}}}\examples{
 data(geomerge)
 
-# 1) Static integration
-# Select (categorical) 'EVENT_TYPE' column in ACLED data
+# 1) Simple static integration of polygon data
+output <- geomerge(geoEPR,target=counties,silent=TRUE)
+summary (output)\dontrun{
+# 2) Static integration for point, polygon, raster data
 ACLED.events <- ACLED[,names(ACLED)%in%c('EVENT_TYPE')]
 AidData.projects <- AidData[,names(AidData)%in%c('project_id')]
-
-# Run geomerge with target = counties
 output <- geomerge(ACLED.events,AidData.projects,geoEPR,
-		  gpw,na.rm=TRUE,target=counties)
-
+		   gpw,na.rm=TRUE,target=counties)
 summary(output)
 plot(output)
 
-# 2) Dynamic integration
-# Select (numerical) 'FATALITIES' column in ACLED data
+# 3) Dynamic point data integration for numeric variables
 ACLED.fatalities <- ACLED[,names(ACLED)%in%c('timestamp','FATALITIES')]
 AidData.commitment <- AidData[,names(AidData)%in%c('timestamp','commitme_1')]
-
-# Run geomerge with target = counties
 output <- geomerge(ACLED.fatalities,AidData.commitment,geoEPR,
-		  target=counties,time=c("2011-01-01","2011-12-31","1"),
-		  t_unit='months',point.agg='sum')
-
+		   target=counties,time=c("2011-01-01", "2011-12-31","1"),
+		   t_unit='months',point.agg='sum')
 summary(output)
 plot(output)
 
-# 3) Population weighted assignment
-
-# Run geomerge with target = counties
-output <- geomerge(geoEPR,target=counties,assignment='max(pop)',population.data = gpw)
-
+# 4) Population weighted assignment
+output <- geomerge(geoEPR,target=counties,assignment='max(pop)',
+		   population.data = gpw)
 summary(output)
 plot(output)}}
