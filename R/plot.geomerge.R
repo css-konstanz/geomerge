@@ -53,26 +53,34 @@ plot.geomerge <- function(x,...){
   }
   
   # SUBSET to exclude all non-numeric inputs and all specified inputs not actually in inputData
+  points.inputs <- 1
+  num_points <- sum(sapply(1:length(full.inputs),function(y) class(x$inputData[[full.inputs[y]]])=="SpatialPointsDataFrame"))
+  if (length(x$parameters$point.agg)==1){
+    point.agg <- rep(x$parameters$point.agg,each=num_points)
+  }else{
+    point.agg <- x$parameters$point.agg
+  }
   inputs <- c()
   var.names <- c()
   for (inpt in 1:length(full.inputs)){
     if (full.inputs[inpt] %in% names(x$inputData)){
       # DISTINGUISH by class of input data
       if (class(x$inputData[[inpt]])=='SpatialPointsDataFrame'){
-        if (is.numeric(x$data@data[,paste0(full.inputs[inpt],'.',x$parameters$point.agg)])){
+        if (is.numeric(x$data@data[,paste0(full.inputs[inpt],'.',point.agg[points.inputs])])){
           inputs <- c(inputs,full.inputs[inpt])
           # GENERATE full set of variables to plot
-          var.names <- c(var.names,paste0(full.inputs[inpt],'.',x$parameters$point.agg))
+          var.names <- c(var.names,paste0(full.inputs[inpt],'.',point.agg[points.inputs]))
           if (time.lag & !spat.lag){
-            var.names <- c(var.names,paste0(full.inputs[inpt],'.',x$parameters$point.agg,'.t_1'))
+            var.names <- c(var.names,paste0(full.inputs[inpt],'.',point.agg[points.inputs],'.t_1'))
           }else if (!time.lag & spat.lag){
-            var.names <- c(var.names,paste0(full.inputs[inpt],'.',x$parameters$point.agg,'.1st'))
+            var.names <- c(var.names,paste0(full.inputs[inpt],'.',point.agg[points.inputs],'.1st'))
           }else if (time.lag & spat.lag){
-            var.names <- c(var.names,paste0(full.inputs[inpt],'.',x$parameters$point.agg,'.t_1'),paste0(full.inputs[inpt],'.',x$parameters$point.agg,'.1st')) 
+            var.names <- c(var.names,paste0(full.inputs[inpt],'.',point.agg[points.inputs],'.t_1'),paste0(full.inputs[inpt],'.',point.agg[points.inputs],'.1st')) 
           }
         }else{
           cat(paste0('NOTE: Selected input ',full.inputs[inpt],' is not a numeric variable. Ignoring ',full.inputs[inpt],' for plotting results.\n'))
         }
+        points.inputs <- points.inputs + 1
       }else if (class(x$inputData[[inpt]])=='SpatialPolygonsDataFrame'){
         if (is.numeric(x$data@data[,full.inputs[inpt]])){
           inputs <- c(inputs,full.inputs[inpt])
@@ -97,30 +105,35 @@ plot.geomerge <- function(x,...){
     }
   }
   
-  # SPECIFY target frame to plot
-  target <- fortify(x$data, region = "FID")
-  
-  # EXTRACT data frame
-  DF <- data.frame(x$data)
-  
-  special.plot <-function(var.names){
-    # SPAN grid of plots
-    lat <- NULL
-    long <- NULL
-    group <- NULL
-    mean <- mean(DF[,var.names])
-    mean <-round (mean, digits = 0)    
-    max <- max(DF[,var.names])
-    min <- min(DF[,var.names])
-    no_axes <- theme(axis.text = element_blank(),axis.line = element_blank(),axis.ticks = element_blank(),panel.border = element_blank(),panel.grid = element_blank(),axis.title = element_blank())
-    p <- ggplot()
-    p <- p + geom_polygon(data=target, aes(x=long, y=lat, group=group), color = "white", fill="grey60")
-    p <- p + geom_map(inherit.aes = FALSE, data = DF,aes_string(map_id = "FID", fill = DF[,var.names]), colour = "white", map = target) + expand_limits(x = target$long, y = target$lat) + scale_fill_gradient2(low = "white", mid = "chartreuse3", midpoint = mean , high = muted("chartreuse4"), limits = c(1, max))
-    p <- p + ggtitle(var.names)
-    p <- p + theme(legend.title=element_blank())
-    p <- p + no_axes
-    return(p)
+  # ONLY plot if variables available
+  if (length(var.names) == 0){
+    cat('\n No plot generated because no numeric variable available for plotting!')
+  }else{
+    # SPECIFY target frame to plot
+    target <- fortify(x$data, region = "FID")
+    
+    # EXTRACT data frame
+    DF <- data.frame(x$data)
+    
+    special.plot <-function(var.names){
+      # SPAN grid of plots
+      lat <- NULL
+      long <- NULL
+      group <- NULL
+      mean <- mean(DF[,var.names])
+      mean <-round (mean, digits = 0)    
+      max <- max(DF[,var.names])
+      min <- min(DF[,var.names])
+      no_axes <- theme(axis.text = element_blank(),axis.line = element_blank(),axis.ticks = element_blank(),panel.border = element_blank(),panel.grid = element_blank(),axis.title = element_blank())
+      p <- ggplot()
+      p <- p + geom_polygon(data=target, aes(x=long, y=lat, group=group), color = "white", fill="grey60")
+      p <- p + geom_map(inherit.aes = FALSE, data = DF,aes_string(map_id = "FID", fill = DF[,var.names]), colour = "white", map = target) + expand_limits(x = target$long, y = target$lat) + scale_fill_gradient2(low = "white", mid = "chartreuse3", midpoint = mean , high = muted("chartreuse4"), limits = c(1, max))
+      p <- p + ggtitle(var.names)
+      p <- p + theme(legend.title=element_blank())
+      p <- p + no_axes
+      return(p)
+    }
+    p <- lapply(var.names,special.plot)
+    do.call(grid.arrange, c(p,list(ncol=ncol)))
   }
-  p <- lapply(var.names,special.plot)
-  do.call(grid.arrange, c(p,list(ncol=ncol)))
 }

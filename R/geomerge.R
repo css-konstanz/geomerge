@@ -3,7 +3,7 @@
 # - need to specify target frame (CRS defined by )
 # - various optional arguments
 #   'time' default is NA, sets startdata, enddate and resolution of aggregation for SpatialPointsData in days c("startdate","resolution in days")
-geomerge <- function(...,target,time = NA,time.lag = TRUE, spat.lag = TRUE, zonal.fun = sum,assignment = 'max(area)',population.data = NA, point.agg = 'cnt', t_unit = 'days',silent=FALSE){
+geomerge <- function(...,target=NULL,time = NA,time.lag = TRUE, spat.lag = TRUE, zonal.fun = sum,assignment = 'max(area)',population.data = NA, point.agg = 'cnt', t_unit = 'days',silent=FALSE){
   
   all.inputs <- as.list(substitute(deparse(...)))[-1]
   if (length(all.inputs)>0){
@@ -32,17 +32,43 @@ geomerge <- function(...,target,time = NA,time.lag = TRUE, spat.lag = TRUE, zona
   if (!silent){
     print(call)
   }
-  # CHECK if target is projected, otherwise look for local CRS, abort if not given
-  standard.CRS <- CRS("+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0")
-  if (standard.CRS@projargs != proj4string(target)){
-    cat('\n NOTE: target not in global datum WGS84. Changing projection but this may take a while... ')
-    target <- spTransform(target,standard.CRS)
-    cat(' Done.\n')
-  }
-  # CHECK other input data format
+  
+  # INPUT CHECKS
   missing_arguments <- c()
   terminate <- FALSE
+  
+  # CHECK if target is missing
+  if (is.null(target)){
+    stop('\n required input target is missing')
+  }else{
+    # CHECK if target is projected, otherwise look for local CRS, abort if not given
+    standard.CRS <- CRS("+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0")
+    if (standard.CRS@projargs != proj4string(target)){
+      cat('\n NOTE: target not in global datum WGS84. Changing projection automatically but this may take a while... ')
+      target <- spTransform(target,standard.CRS)
+      cat(' Done.\n')
+    }
+  }
+  # CHECK other input data format
+  points.inputs <- 1
+  agg.checked <- FALSE
   for (iter in 1:length(inputs)){
+    agg.check <- point.agg
+    num_points <- sum(sapply(1:length(inputs),function(x) class(inputs[[x]])=="SpatialPointsDataFrame"))
+    if (class(inputs[[iter]])=="SpatialPointsDataFrame" & length(point.agg)>1 & !agg.checked){
+      if (length(point.agg)!=num_points){
+        missing_arguments <- append(missing_arguments,paste0('\n point.agg must be specified globally or as a vector of characters whose length matches the number of "SpatialPointsDataFrame" input arguments'))
+        terminate <-TRUE
+        agg.checked <- TRUE
+      }else{
+        agg.check <- point.agg[points.inputs]
+        points.inputs <- points.inputs + 1
+      }
+    }
+    # suppress warnings in later checks
+    if (agg.checked){
+      agg.check <- point.agg[1]
+    }
     if (!(class(inputs[[iter]])=='SpatialPolygonsDataFrame' | class(inputs[[iter]])=='SpatialPointsDataFrame' | class(inputs[[iter]])=='RasterLayer')){
       if (class(inputs[[iter]])=='RasterStack'){
         missing_arguments <- append(missing_arguments,paste0('\n input ',data.names[iter],' is RasterStack, please input layers as separate RasterLayer'))
@@ -56,8 +82,12 @@ geomerge <- function(...,target,time = NA,time.lag = TRUE, spat.lag = TRUE, zona
         missing_arguments <- append(missing_arguments,paste0('\n SpatialPolgyonsDataFrame ',data.names[iter],' must contain exactly one column with the variable of interest'))
         terminate <-TRUE
       }
-      if ((assignment=='max(pop)' | assignment=='min(pop)' | assignment=='weighted(pop)') & population.data==NA ){
-        missing_arguments <- append(missing_arguments,paste0('\n SpatialPolgyonsDataFrame ',data.names[iter],' is used with population-based assignment but population.data is not specified'))
+      if (assignment%in%c('max(pop)','min(pop)','weighted(pop)') & class(population.data)!='RasterLayer'){
+        missing_arguments <- append(missing_arguments,paste0('\n SpatialPolgyonsDataFrame ',data.names[iter],' is used with population-based assignment but population.data RasterLayer is missing or mis-specified'))
+        terminate <-TRUE
+      }
+      if (assignment%in%c('weighted(area)','weighted(pop)') & !is.numeric(inputs[[iter]]@data[,1])){
+        missing_arguments <- append(missing_arguments,paste0('\n not possible to use SpatialPolgyonsDataFrame ',data.names[iter],' with weighted assignment because variable is non-numeric'))
         terminate <-TRUE
       }
     }
@@ -66,11 +96,11 @@ geomerge <- function(...,target,time = NA,time.lag = TRUE, spat.lag = TRUE, zona
         missing_arguments <- append(missing_arguments,paste0('\n SpatialPointsDataFrame ',data.names[iter],' must contain exactly one column with the variable of interest (and a "timestamp" column, if applicable)'))
         terminate <-TRUE
       }
-      if (!(point.agg == 'sum' | point.agg == 'cnt')){
+      if (!(agg.check%in%c('sum','cnt'))){
         missing_arguments <- append(missing_arguments,paste0('\n argument point.agg must be either "cnt" or "sum"'))
         terminate <-TRUE
       }
-      if (point.agg=='sum' & class(inputs[[iter]]@data[,!(names(inputs[[iter]])%in%'timestamp')])!='numeric'){
+      if (agg.check=='sum' & !is.numeric(inputs[[iter]]@data[,!(names(inputs[[iter]])%in%'timestamp')])){
         missing_arguments <- append(missing_arguments,paste0('\n SpatialPointsDataFrame ',data.names[iter],' must contain a numeric variable if using option point.agg="sum"'))
         terminate <-TRUE
       }
@@ -131,36 +161,18 @@ geomerge <- function(...,target,time = NA,time.lag = TRUE, spat.lag = TRUE, zona
   }
   # CHECK zonal function input
   if (class(zonal.fun)!='function'){
-    extract_names <- c()
-    for (iter in 1:length(inputs)){
-      extract_names <- c(extract_names,data.names[class(inputs[[iter]])=='SpatialPolygonsDataFrame' | class(inputs[[iter]])=='RasterLayer'])
-    }
-    if (names(zonal.fun)!=extract_names){
-      missing_arguments <- append(missing_arguments,'\n zonal.fun mis-specified (has to be "function" or list of "function" with entries named exactly as the relevant datasets)')
-      terminate <-TRUE
-    }
+    missing_arguments <- append(missing_arguments,'\n zonal.fun mis-specified, has to be of class "function"')
+    terminate <-TRUE
   }
   # CHECK assignment format
-  if (!(assignment=='max(pop)' | assignment=='min(pop)' | assignment=='max(area)' | assignment=='min(area)' | assignment=='weighted(pop)' | assignment=='weighted(area)')){
+  if (!(assignment%in%c('max(pop)','min(pop)','max(area)','min(area)','weighted(pop)','weighted(area)'))){
     missing_arguments <- append(missing_arguments,'\n assignment must be "max(area)", "min(area)", "weighted(area)", "max(pop)", "min(pop)" or "weighted(pop)"')
     terminate <-TRUE
-  }else{
-    # CHECK if using population based assignment that population data is given
-    if (assignment=='max(pop)' | assignment=='min(pop)' | assignment=='weighted(pop)'){
-      if (is.na(population.data)){
-        missing_arguments <- append(missing_arguments,'\n population.data not provided for population based assignment')
-        terminate <-TRUE
-      }
-      if (!class(population.data)=='RasterLayer'){
-        missing_arguments <- append(missing_arguments,'\n population.data must be specified as Raster')
-        terminate <-TRUE
-      }
-    }
   }
-  # CHECK that population.data is projected to local CRS
-  if (!is.na(population.data)){
+  # CHECK that population.data is projected to correct CRS
+  if (class(population.data)=='RasterLayer'){
     if (standard.CRS@projargs != proj4string(population.data)){
-      cat('\n WARNING: population.data not in global datum WGS84. Changing projection but this may take a while...')
+      cat('\n NOTE: population.data not in global datum WGS84. Changing projection automatically but this may take a while...')
       population.data <- projectRaster(population.data, crs=standard.CRS)
       cat(' Done.')
     }
@@ -172,7 +184,7 @@ geomerge <- function(...,target,time = NA,time.lag = TRUE, spat.lag = TRUE, zona
   }
   # ABORT if any check fails
   if (terminate){
-    cat("\n\n ERROR - the following required arguments are missing or mis-specified:", "\n", missing_arguments)
+    stop(missing_arguments)
   }# end if
   
   # EXECUTE otherwise
@@ -183,40 +195,24 @@ geomerge <- function(...,target,time = NA,time.lag = TRUE, spat.lag = TRUE, zona
     # CALCULATE local areas for normalization and area weighted calculations
     outdata <- data.frame(FID=sapply(target@polygons, FUN=function(x) {slot(x, 'ID')}))
     outdata <- cbind(outdata,target@data)
-    #outdata$area <- gArea(target,byid=TRUE)/1e6 #area in km2
-    outdata$area <- sapply(target@polygons, FUN=function(x) areaPolygon(x@Polygons[[1]]@coords))/1e6
+    outdata$area <- sapply(target@polygons, function(x) sum(sapply(1:length(x@Polygons),function(y) areaPolygon(x@Polygons[[y]]@coords)))/1e6)
     
-    # CLEAR data in target, add ID column only
-    target@data <- data.frame(list(FID = sapply(target@polygons, FUN=function(x) {slot(x, 'ID')})))
-    
-    # GENERATE population zonal stats if population weighing is used
-    if (assignment=='max(pop)' | assignment=='min(pop)' | assignment=='pop.weighted'){
-      popdata <- crop(population.data, extent(target))
-      popdata <- mask(popdata, target)
-      if (length(optional.inputs>0)){
-        outdata$population<-extract(popdata,target, fun = mean, optional.inputs)
-        }else{
-        outdata$population<-extract(popdata,target, fun = mean)
-      }
-      target$population <- outdata$population
-    }
+    # CLEAR data in target, add only ID column
+    target@data <- data.frame(list(FID = sapply(target@polygons, function(x) {slot(x, 'ID')})))
     
     # MERGE datasets subsequently
+    points.inputs <- 1
     for (iter in 1:length(inputs)){
       data <- inputs[[iter]]
       data.name = data.names[iter]
-      if(class(zonal.fun)=="list"){
-        paste.zonal <- zonal.fun[[data.name]]
+      if(class(data)=="SpatialPointsDataFrame" & length(point.agg)>1){
+        paste.agg <- point.agg[points.inputs]
+        points.inputs <- points.inputs + 1
       }else{
-        paste.zonal <- zonal.fun
-      }
-      if(class(assignment)=="list"){
-        paste.assignment <- assignment[[data.name]]
-      }else{
-        paste.assignment <- assignment
+        paste.agg <- point.agg
       }
       cat(paste0('\n Dataset',iter,': ',data.name,' (',as.character(class(data)),')'))
-      outdata <- geomerge.merge(data,data.name,target,standard.CRS,outdata,wghts,time,time.lag,spat.lag,paste.zonal,paste.assignment,point.agg,t_unit,silent,optional.inputs)
+      outdata <- geomerge.merge(data,data.name,target,standard.CRS,outdata,wghts,time,time.lag,spat.lag,zonal.fun,assignment,population.data,paste.agg,t_unit,silent,optional.inputs)
       cat(paste0(' \n Dataset ',data.name,' successfully merged to target.'))
     }
     

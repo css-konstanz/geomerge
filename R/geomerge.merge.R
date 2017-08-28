@@ -2,7 +2,7 @@
 # - pairwise merger of dataset to target
 # - pass on weights matrix (first and second order weights, list of neighbors)
 # - pass on all options from mergeit
-geomerge.merge <- function(data,data.name,target,standard.CRS,outdata,wghts,time,time.lag,spat.lag,zonal.fun,assignment,point.agg,t_unit,silent,optional.inputs){
+geomerge.merge <- function(data,data.name,target,standard.CRS,outdata,wghts,time,time.lag,spat.lag,zonal.fun,assignment,population.data,point.agg,t_unit,silent,optional.inputs){
   if (silent){
     cat <-function(...){}
   }
@@ -10,10 +10,10 @@ geomerge.merge <- function(data,data.name,target,standard.CRS,outdata,wghts,time
   # DISTINCTION by type of data
   # 1) Polygon data
   if (class(data)=='SpatialPolygonsDataFrame'){
-    cat(paste0('\n Generating zonal statistics...'))
+    cat(paste0('\n Merging polygon data...'))
     # CALL geomerge.assign here (distinguishes by assignment)
-    out.stats <- geomerge.assign(data,target,assignment)
-    if (spat.lag & is.numeric(out.stats[,1])){
+    out.stats <- geomerge.assign(data,target,assignment,population.data,optional.inputs)
+    if (spat.lag & is.numeric(data@data[,1])){
       out.stats <- cbind(out.stats,lag.listw(nb2listw(wghts$wts1$neighbours,style= "W",zero.policy=TRUE),out.stats[,1],zero.policy=TRUE),lag.listw(nb2listw(wghts$wts2$neighbours,style= "W",zero.policy=TRUE),out.stats[,1],zero.policy=TRUE))
       out.stats <- data.frame(out.stats)
       out.stats <- out.stats[rep(seq_len(nrow(out.stats)),nrow(outdata)/nrow(out.stats)),]
@@ -27,7 +27,7 @@ geomerge.merge <- function(data,data.name,target,standard.CRS,outdata,wghts,time
       outdata <- cbind(outdata,out.stats)
       names(outdata) <- c(names(outdata)[1:(length(names(outdata))-1)],data.name)
       if(spat.lag){
-        cat(paste0('No spatial lags calculated for ',data.name,' since data is non-numeric.'))
+        cat(paste0('\n NOTE: No spatial lags calculated for ',data.name,' since data is non-numeric.\n'))
       }
     }
     cat(' Done.')
@@ -295,7 +295,7 @@ geomerge.merge <- function(data,data.name,target,standard.CRS,outdata,wghts,time
       # UPDATE outdata once fully iterated
       if (panel.check){
         # exclude 'period' and 'enddate' columns here if they already exist
-        point.stats <- point.stats[,3:5]
+        point.stats <- point.stats[,3:ncol(point.stats)]
         outdata <- cbind(outdata,point.stats)
       }else{
         rep.outdata <- outdata[rep(seq_len(nrow(outdata)),nrow(point.stats)/nrow(outdata)),]
@@ -318,17 +318,16 @@ geomerge.merge <- function(data,data.name,target,standard.CRS,outdata,wghts,time
   
   # 3) Raster data
   if (class(data)=='RasterLayer'){
-    cat(paste0('\n Cropping RasterLayer...'))
-    # REDUCE size of raster to target
-    data <- crop(data, extent(target))
-    data <- mask(data, target)
-    cat(' Done.')
+    # REDUCE size of raster to target if larger
+    if (extent(data) > 1.2*extent(target)){
+      cat(paste0('\n Cropping RasterLayer...'))
+      data <- crop(data, extent(target))
+      data <- mask(data, target)
+      cat(' Done.')
+    }
     
     # EXTRACT data
     cat(paste0('\n Generating zonal statistics...'))
-    if (class(zonal.fun)!='function'){
-      zonal.fun <- zonal.fun[[names(zonal.fun)==data.name]]
-    }
     if (length(optional.inputs>0)){
       zonal.stats <- extract(data,target, fun = zonal.fun, optional.inputs)
     }else{
@@ -352,6 +351,6 @@ geomerge.merge <- function(data,data.name,target,standard.CRS,outdata,wghts,time
     outdata <- cbind(outdata,out.stats)
     cat(' Done.')
   }
-  row.names(outdata)<-NULL
+  #row.names(outdata)<-NULL
   return(outdata)
 }

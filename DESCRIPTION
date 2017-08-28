@@ -1,13 +1,13 @@
 Package: geomerge
 Type: Package
 Title: Geospatial Data Integration
-Version: 0.2.3
-Date: 2017-08-25
+Version: 0.3.0
+Date: 2017-08-28
 Author: Karsten Donnay and Andrew M. Linke
 Maintainer: Karsten Donnay <kdonnay@gmx.net>
 Description: Geospatial data integration framework that merges raster, spatial polygon, and (dynamic) spatial points data into a spatial (panel) data frame at any geographical resolution.
 License: LGPL-3
 Depends: R (>= 2.10)
-Imports: inlmisc, raster, spdep, sp, maptools, geosphere, sqldf, lubridate, methods, stats, ggplot2, gridExtra, scales
+Imports: inlmisc, raster, spdep, sp, geosphere, lubridate, methods, stats, ggplot2, gridExtra, scales
 NeedsCompilation: no
 

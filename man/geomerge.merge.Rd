@@ -9,7 +9,7 @@ Auxiliary function that performs the actual integration of the \code{target} fra
 \usage{
 geomerge.merge(data,data.name,target,standard.CRS,outdata,wghts,
 		time, time.lag,spat.lag,zonal.fun,assignment,
-		point.agg, t_unit,silent,optional.inputs)
+		population.data,point.agg, t_unit,silent,optional.inputs)
 }
 \arguments{
   \item{data}{
@@ -43,6 +43,7 @@ geomerge.merge(data,data.name,target,standard.CRS,outdata,wghts,
   \item{assignment}{
   identification of either population- or area-weighting assignment rules when handling \code{SpatialPolygonsDataFrame} joins to \code{target}. Default = \kbd{"area.assign"}. See Details in \code{\link{geomerge}}.
 }
+\item{population.data}{  specifies data used for weighting if a population-based \code{assignment} rule is selected. See Details in \code{\link{geomerge}}.}
   \item{point.agg}{
   specification of aggregation format for data of type \code{SpatialPointsDataFrame}. Default = \kbd{"cnt"}. See Details in \code{\link{geomerge}}.
 }
