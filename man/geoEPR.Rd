@@ -3,7 +3,7 @@
 \alias{geoEPR}
 \title{Polygon dataset to illustrate the functionality of geomerge}
 \description{
-  \emph{geoEPR} Nigeria dataset used as example for a \code{SpatialPolygonsDataFrame} available from https://icr.ethz.ch/data/epr/geoepr/. The dataset contains geo-locations for all politically relevant ethnic groups from the EPR-Core 2014 dataset. It assigns every politically relevant group one of six settlement patterns and provides polygons describing their location.
+  \emph{geoEPR} Nigeria dataset used as example for a \code{SpatialPolygonsDataFrame} can be accessed and downloaded at https://icr.ethz.ch/data/epr/geoepr/. The dataset contains geo-locations for all politically relevant ethnic groups from the EPR-Core 2014 dataset. It assigns every politically relevant group one of six settlement patterns and provides polygons describing their location.
 }
 \usage{data(geomerge)}
 \format{A \code{SpatialPolygonsDataFrame} containing observations.}

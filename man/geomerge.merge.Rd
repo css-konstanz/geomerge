@@ -38,7 +38,7 @@ geomerge.merge(data,data.name,target,standard.CRS,outdata,wghts,
   Boolean indicating whether or not first and second order spatial lag values of all variables are returned. Default = \kbd{TRUE}.
 }
   \item{zonal.fun}{
-  object of class \kbd{function} applied to values of \code{RasterLayer} or \code{SpatialLinesDataFrame} when generating zonal statistics for each target polygon. Default = \kbd{sum}. See Details in \code{\link{geomerge}}.
+  object of class \kbd{function} applied to values of \code{RasterLayer} when generating zonal statistics for each target polygon. Default = \kbd{sum}. See Details in \code{\link{geomerge}}.
 }
   \item{assignment}{
   identification of either population- or area-weighting assignment rules when handling \code{SpatialPolygonsDataFrame} joins to \code{target}. Default = \kbd{"area.assign"}. See Details in \code{\link{geomerge}}.

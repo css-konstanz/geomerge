@@ -4,7 +4,7 @@
 Generates a grid in a given local CRS that is, by default, returned as SpatialPolygonsDataFrame in WGS84.
 }
 \description{
-Implementation of a simple grid generation function that can be used to produce target SpatialPolygonDataFrames to be used in \code{geomerge}.
+Implementation of a simple grid generation function producing a \code{SpatialPolygonsDataFrame} to be used as \code{target} in \code{geomerge}.
 }
 \usage{
 generateGrid(extent, size, local.CRS, makeWGS84 = TRUE, silent = FALSE)

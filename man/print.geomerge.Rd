@@ -1,10 +1,10 @@
 \name{print.geomerge}
 \alias{print.geomerge}
 \title{
-Print function for objects of class geomerge. 
+Print function for objects of class 'geomerge'. 
 }
 \description{
-Overloads the default \code{print} for objects of class \code{geomerge}.
+Overloads the default \code{print} for objects of class 'geomerge'.
 }
 \usage{
 \method{print}{geomerge}(x, ...)

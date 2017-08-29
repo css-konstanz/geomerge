@@ -1,10 +1,10 @@
 \name{summary.geomerge}
 \alias{summary.geomerge}
 \title{
-Summary function for objects of class geomerge.
+Summary function for objects of class 'geomerge'.
 }
 \description{
-Overloads the default \code{summary} for objects of class \code{geomerge}.
+Overloads the default \code{summary} for objects of class 'geomerge'.
 }
 \usage{
 \method{summary}{geomerge}(object, ...)
