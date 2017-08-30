@@ -1,12 +1,12 @@
-\name{counties}
+\name{states}
 \docType{data}
-\alias{counties}
+\alias{states}
 \title{Polygon dataset to illustrate the functionality of geomerge}
 \description{
 Nigeria administrative units (ADM1) dataset used as example for the target \code{SpatialPolygonsDataFrame} data are merged. The dataset is available at http://www.arcgis.com/home/item.html?id=0e58995046b74254911c1dc0eb756fa4.
 }
 \details{
-Note that the polygons in \code{counties} have been simplified to reduce the size of the \code{SpatialPolygonsDataFrame} used as integration target for easier illustration. This applies, in particular, to the Niger Delta region of Nigeria.
+Note that the polygons in \code{states} have been simplified to reduce the size of the \code{SpatialPolygonsDataFrame} used as integration target for easier illustration. This applies, in particular, to the Niger Delta region of Nigeria.
 }
 \usage{data(geomerge)}
 \format{A \code{SpatialPolygonsDataFrame} containing observation and that data is merged to using \code{geomerge}.}
