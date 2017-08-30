@@ -38,6 +38,6 @@ require(sp)
 data(geomerge)
 
 # Generate grid with 10 km cell size in local CRS for Nigeria
-counties.grid <- generateGrid(counties,10000,local.CRS=CRS("+init=epsg:26391"),
+states.grid <- generateGrid(states,10000,local.CRS=CRS("+init=epsg:26391"),
                               silent=TRUE)
 }

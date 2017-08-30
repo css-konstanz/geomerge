@@ -22,13 +22,13 @@ Andrew M. Linke, Karsten Donnay. (2017). "Scale Variability Misclassification: T
 data(geomerge)
 
 # 1) Simple static integration of polygon data
-output <- geomerge(geoEPR,target=counties,silent=TRUE)
+output <- geomerge(geoEPR,target=states,silent=TRUE)
 summary (output)\donttest{
 # 2) Static integration for point, polygon, raster data
 ACLED.events <- ACLED[,names(ACLED)\%in\%c('EVENT_TYPE')]
 AidData.projects <- AidData[,names(AidData)\%in\%c('project_id')]
 output <- geomerge(ACLED.events,AidData.projects,geoEPR,
-		   gpw,na.rm=TRUE,target=counties)
+		   gpw,na.rm=TRUE,target=states)
 summary(output)
 plot(output)
 
@@ -36,13 +36,13 @@ plot(output)
 ACLED.fatalities <- ACLED[,names(ACLED)\%in\%c('timestamp','FATALITIES')]
 AidData.commitment <- AidData[,names(AidData)\%in\%c('timestamp','commitme_1')]
 output <- geomerge(ACLED.fatalities,AidData.commitment,geoEPR,
-		   target=counties,time=c("2011-01-01", "2011-12-31","1"),
+		   target=states,time=c("2011-01-01", "2011-12-31","1"),
 		   t_unit='months',point.agg='sum')
 summary(output)
 plot(output)
 
 # 4) Population weighted assignment
-output <- geomerge(geoEPR,target=counties,assignment='max(pop)',
+output <- geomerge(geoEPR,target=states,assignment='max(pop)',
 		   population.data = gpw)
 summary(output)
 plot(output)}}
