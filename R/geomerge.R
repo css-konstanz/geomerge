@@ -160,8 +160,8 @@ geomerge <- function(...,target=NULL,time = NA,time.lag = TRUE, spat.lag = TRUE,
     }
   }
   # CHECK zonal function input
-  if (!class(zonal.fun)%in%c('function','methods'){
-    missing_arguments <- append(missing_arguments,'\n zonal.fun mis-specified, has to be of class "function" or "methods")
+  if (!class(zonal.fun)%in%c('function','methods')){
+    missing_arguments <- append(missing_arguments,'\n zonal.fun mis-specified, has to be of class "function" or "methods"')
     terminate <-TRUE
   }
   # CHECK assignment format
