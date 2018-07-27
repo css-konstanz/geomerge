@@ -7,13 +7,24 @@ geomerge <- function(...,target=NULL,time = NA,time.lag = TRUE, spat.lag = TRUE,
   
   all.inputs <- as.list(substitute(deparse(...)))[-1]
   if (length(all.inputs)>0){
-    data.input <- sapply(1:length(all.inputs),function(x) class(all.inputs[[x]])=="name")
+    data.input <- sapply(1:length(all.inputs),function(x) class(all.inputs[[x]])=="name" | "$" %in% unlist(strsplit(as.character(all.inputs[[x]]),NULL)))
     inputs <- all.inputs[data.input]
   }else{
     stop('no inputs provided')
   }
   if (length(inputs)>0){
-    data.names <- sapply(1:length(inputs),function(x) as.character(inputs[[x]]))
+    data.names <- c()
+    for (inp in 1:length(inputs)){
+      current.name <- as.character(inputs[[inp]])
+      if (length(current.name)>1){
+        data.names <- c(data.names,paste(current.name[2],current.name[3],sep="."))
+        # Correct input
+        inp.data <- get(current.name[2])
+        inputs[[inp]] <- inp.data[,names(inp.data)%in%c(current.name[3])]
+      }else{
+        data.names <- c(data.names,current.name)
+      } 
+    }
     inputs <- sapply(1:length(inputs),function(x) eval(inputs[[x]]))
     optional.inputs <- all.inputs[!data.input]
     if (length(optional.inputs>0)){
