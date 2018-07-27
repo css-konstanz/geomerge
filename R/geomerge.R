@@ -20,7 +20,12 @@ geomerge <- function(...,target=NULL,time = NA,time.lag = TRUE, spat.lag = TRUE,
         data.names <- c(data.names,paste(current.name[2],current.name[3],sep="."))
         # Correct input
         inp.data <- get(current.name[2])
-        inputs[[inp]] <- inp.data[,names(inp.data)%in%c(current.name[3])]
+        if (is.na(time)){
+          inputs[[inp]] <- inp.data[,names(inp.data)%in%c(current.name[3])]
+        # add timestamp column for dynamic data
+        }else{
+          inputs[[inp]] <- inp.data[,names(inp.data)%in%c(current.name[3],"timestamp")]
+        }
       }else{
         data.names <- c(data.names,current.name)
       } 
