@@ -13,7 +13,7 @@ The original \emph{AidData} "start_date" column has been relabeled as "timestamp
 \source{http://aiddata.org
 
 Citation:
-Michael J. Tierney, Daniel L. Nielson, Darren G. Hawkins, J. Timmons Roberts, Michael G. Findley, Ryan M. Powers, Bradley Parks, Sven E. Wilson, and Robert L. Hicks. (2011). "More Dollars than Sense: Refining Our Knowledge of Development Finance Using AidData." \emph{World Development} 39(11): 1891-1906.
+AidData. 2016. NigeriaAIMS_GeocodedResearchRelease_Level1_v1.3.1 geocoded dataset. Williamsburg, VA and Washington, DC: AidData. Accessed on August 23, 2017. http://aiddata.org/research-datasets.
 }
 \references{
 Andrew M. Linke, Karsten Donnay. (2017). "Scale Variability Misclassification: The Impact of Spatial Resolution on Effect Estimates in the Geographic Analysis of Foreign Aid and Conflict." Paper presented at the \emph{International Studies Association Annual Meeting}, February 22-25 2017, Baltimore.

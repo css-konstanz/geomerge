@@ -1,7 +1,10 @@
 #### function implementing different assignment rules using sql
 # assumes that target has ID field (which it has)
 # assumes that target has area (which is has)
-geomerge.assign<- function(polygon_input,target,assignment,population.data,optional.inputs){
+geomerge.assign<- function(polygon_input,target,assignment,population.data,optional.inputs,silent){
+  if (silent){
+    cat <-function(...){}
+  }
   # much larger (N of rows) SPDF with each polygon (where overlap exists) 'cut' but holding target FID
   att <- intersect(polygon_input,target[,1])
   # GENERATE population zonal stats if population weighing is used

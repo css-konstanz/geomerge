@@ -22,7 +22,3 @@ Andrew M. Linke, Karsten Donnay. (2017). "Scale Variability Misclassification: T
 \seealso{
 \code{\link{geomerge}}, \code{\link{geomerge.merge}},\code{\link{geomerge.neighbor}}, \code{\link{geomerge.assign}},\code{\link{generateGrid}}
 }
-%\examples{
-% add minimal working example here
-%\dontrun{}
-%}

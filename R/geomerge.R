@@ -20,7 +20,7 @@ geomerge <- function(...,target=NULL,time = NA,time.lag = TRUE, spat.lag = TRUE,
         data.names <- c(data.names,paste(current.name[2],current.name[3],sep="."))
         # Correct input
         inp.data <- get(current.name[2])
-        if (is.na(time)){
+        if (is.na(time[1])){
           inputs[[inp]] <- inp.data[,names(inp.data)%in%c(current.name[3])]
         # add timestamp column for dynamic data
         }else{
@@ -141,7 +141,7 @@ geomerge <- function(...,target=NULL,time = NA,time.lag = TRUE, spat.lag = TRUE,
     terminate <-TRUE
   }
   # CHECK if static data or formats for non-static data are specified
-  if (any(is.na(time))){
+  if (any(is.na(time[1]))){
     cat('\n Running geomerge in static mode.')
   }else{
     cat('\n Running geomerge in dynamic mode.')

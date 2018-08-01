@@ -12,7 +12,7 @@ geomerge.merge <- function(data,data.name,target,standard.CRS,outdata,wghts,time
   if (class(data)=='SpatialPolygonsDataFrame'){
     cat(paste0('\n Merging polygon data...'))
     # CALL geomerge.assign here (distinguishes by assignment)
-    out.stats <- geomerge.assign(data,target,assignment,population.data,optional.inputs)
+    out.stats <- geomerge.assign(data,target,assignment,population.data,optional.inputs,silent)
     if (spat.lag & is.numeric(data@data[,1])){
       out.stats <- cbind(out.stats,lag.listw(nb2listw(wghts$wts1$neighbours,style= "W",zero.policy=TRUE),out.stats[,1],zero.policy=TRUE),lag.listw(nb2listw(wghts$wts2$neighbours,style= "W",zero.policy=TRUE),out.stats[,1],zero.policy=TRUE))
       out.stats <- data.frame(out.stats)

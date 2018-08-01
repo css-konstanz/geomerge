@@ -35,7 +35,3 @@ Andrew M. Linke, Karsten Donnay. (2017). "Scale Variability Misclassification: T
 \seealso{
   \code{\link{geomerge}}
 }
-%\examples{
-%\dontrun{
-%}
-%}

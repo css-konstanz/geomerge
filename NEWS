@@ -1,0 +1,11 @@
+//
+// geomerge - Updates and Bug Fixes
+//
+//
+//
+
+
+== 0.3.1 (31 Jul 2018) ==
+   * new flexible logic for handling arguments based on "$" variable notation
+   * corrected variable checks to remove a number of spurious warning messages
+   * various small updates and bug fixes

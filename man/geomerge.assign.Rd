@@ -7,7 +7,7 @@ Implements different assignment rules using SQL [Auxiliary Function]
 Implements assignment of polygon values to the \code{target} frame using different assignment rules. For efficient performance implemented using SQL.
 }
 \usage{
-geomerge.assign(polygon_input,target,assignment,population.data,optional.inputs)
+geomerge.assign(polygon_input,target,assignment,population.data,optional.inputs,silent)
 }
 \arguments{
   \item{polygon_input}{
@@ -19,6 +19,9 @@ geomerge.assign(polygon_input,target,assignment,population.data,optional.inputs)
  \item{population.data}{  specifies data used for weighting if a population-based \code{assignment} rule is selected. See Details in \code{\link{geomerge}}.}
  \item{optional.inputs}{
   Any optional inputs compatible with the \code{extract} function in \pkg{raster}.
+}
+ \item{silent}{
+  Boolean switch to suppress any (non-critical) warnings and messages. Default = \kbd{FALSE}.
 }
 }
 \details{

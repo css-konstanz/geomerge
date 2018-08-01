@@ -29,17 +29,13 @@ data(geomerge)
 output <- geomerge(geoEPR,target=states,silent=TRUE)
 summary (output)\donttest{
 # 2) Static integration for point, polygon, raster data
-ACLED.events <- ACLED[,names(ACLED)\%in\%c('EVENT_TYPE')]
-AidData.projects <- AidData[,names(AidData)\%in\%c('project_id')]
-output <- geomerge(ACLED.events,AidData.projects,geoEPR,
+output <- geomerge(ACLED$EVENT_TYPE,AidData$project_id,geoEPR,
 		   gpw,na.rm=TRUE,target=states)
 summary(output)
 plot(output)
 
 # 3) Dynamic point data integration for numeric variables
-ACLED.fatalities <- ACLED[,names(ACLED)\%in\%c('timestamp','FATALITIES')]
-AidData.commitment <- AidData[,names(AidData)\%in\%c('timestamp','commitme_1')]
-output <- geomerge(ACLED.fatalities,AidData.commitment,geoEPR,
+output <- geomerge(ACLED$FATALITIES,AidData$commitme_1,geoEPR,
 		   target=states,time=c("2011-01-01", "2011-12-31","1"),
 		   t_unit='months',point.agg='sum')
 summary(output)
