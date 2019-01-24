@@ -40,7 +40,7 @@ geomerge.merge <- function(data,data.name,target,standard.CRS,outdata,wghts,time
       cat(paste0('\n Aggregating point data...'))
       data$ones<-1
       points.in.poly<-over(data,target) #tells which unit the points are within
-      data$FID<-points.in.poly$FID #tacking to the violence file
+      data$FID<-points.in.poly$FID #linking to the point data file
       if (point.agg=="cnt"){
         id.count<-aggregate(data$ones, by = list(data$FID), FUN = sum)
         colnames(id.count)<-c("FID","cnt")

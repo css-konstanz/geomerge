@@ -206,7 +206,12 @@ geomerge <- function(...,target=NULL,time = NA,time.lag = TRUE, spat.lag = TRUE,
   # EXECUTE otherwise
   if (!terminate){
     # CALCULATE first and second order neighborhood weights
-    wghts <- geomerge.neighbor(target)
+    if (spat.lag){
+      wghts <- geomerge.neighbor(target)
+    }else{
+      # default to empty weight list
+      wghts <- list(wts1=c(), wts2=c())
+    }
     
     # CALCULATE local areas for normalization and area weighted calculations
     outdata <- data.frame(FID=sapply(target@polygons, FUN=function(x) {slot(x, 'ID')}))
