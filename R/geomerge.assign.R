@@ -6,7 +6,7 @@ geomerge.assign<- function(polygon_input,target,assignment,population.data,optio
     cat <-function(...){}
   }
   # much larger (N of rows) SPDF with each polygon (where overlap exists) 'cut' but holding target FID
-  att <- intersect(polygon_input,target[,1])
+  att <- raster::intersect(polygon_input,target[,1])
   # GENERATE population zonal stats if population weighing is used
   if (assignment%in%c('max(pop)','min(pop)','weighted(pop)')){
     cat(paste0('\n Generating zonal statistics for population based assignment...'))
