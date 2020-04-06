@@ -5,6 +5,12 @@
 //
 
 
+== 0.3.2 (06 Apr 2020) ==
+   * no spatial weights calculation if spat.lag=FALSE 
+   * now allows for integration of non-contiguous units (without lags)
+   * extensive README file with examples added
+   * various small updates and bug fixes
+
 == 0.3.1 (31 Jul 2018) ==
    * new flexible logic for handling arguments based on "$" variable notation
    * corrected variable checks to remove a number of spurious warning messages

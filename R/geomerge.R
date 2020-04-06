@@ -43,7 +43,7 @@ geomerge <- function(...,target=NULL,time = NA,time.lag = TRUE, spat.lag = TRUE,
     cat <-function(...){}
   }
   
-  cat(' geomerge: Geospatial data integration.\n Karsten Donnay and Andrew Linke, 2017\n\n ATTENTION: Depending on the resolution and number of datasets, the merger may take some time!\n\n\n ')
+  cat(' geomerge: Geospatial data integration.\n Karsten Donnay and Andrew Linke, 2020\n\n ATTENTION: Depending on the resolution and number of datasets, the merger may take some time!\n\n\n ')
   call <- match.call()
   if (!silent){
     print(call)
