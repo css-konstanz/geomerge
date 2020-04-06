@@ -41,7 +41,7 @@ data(geomerge)
 The example datasets cover all three main spatial data types discussed
 above:
 
-  - `ACLED` (`Point` data): Conflict events for Nigeria in 2011 as recorded by the Armed Conflict Location & Event Data project, available from <http://www.acleddata.com/data>. This dataset contains geocoded, timestamped information on individual conflict events.
+  - `ACLED` (`Point` data): Conflict events for Nigeria in 2011 as recorded by the Armed Conflict Location & Event Data project, available from <http://www.acleddata.com>. This dataset contains geocoded, timestamped information on individual conflict events.
 
   - `AidData` (`Point` data, including locations geocoded to administrative divisions, but assigned coordinates of centroids): Activities of development aid projects in Nigeria with start dates in 2011 as recorded by AidData, available at <http://aiddata.org>. This dataset contains geocoded, timestamped information on individual aid projects.
 
