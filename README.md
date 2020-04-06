@@ -152,7 +152,7 @@ summary (output)
 plot(output)
 ```
 
-![Fig1](https://raw.githubusercontent.com/kdonnay/geomergemaster/README_files/Fig1.png)
+![Fig1](https://raw.githubusercontent.com/kdonnay/geomerge/master/README_files/Fig1.png)
 
 As can be seen in the `summary`, the package not only merged the layer `gpw` to `states`, but also generated its value per area of the target polygon and first- and second-order spatial lag values for each. For inputs of type `RasterLayer`, values per area are always also returned. Whether or not spatial lags should be calculated can be controlled by the optional Boolean argument `spat.lag`.
 
@@ -171,7 +171,7 @@ summary (output)
 plot(output)
 ```
 
-![Fig2](https://raw.githubusercontent.com/kdonnay/geomergemaster/README_files/Fig2.png)
+![Fig2](https://raw.githubusercontent.com/kdonnay/geomerge/master/README_files/Fig2.png)
 
 As in the case of `Polygon` data, the defaults of `geomerge` have built-in implicit assumptions regarding zonal statistics. The default zonal function is summation (`zonal.fun = sum`). The package also supports all zonal statistics consistent with the `extract` function in the `raster` package.
 
@@ -190,7 +190,7 @@ summary (output)
 plot(output)
 ```
 
-![Fig3](https://raw.githubusercontent.com/kdonnay/geomergemaster/README_files/Fig3.png)
+![Fig3](https://raw.githubusercontent.com/kdonnay/geomerge/master/README_files/Fig3.png)
 
 Static and Dynamic Integration of Point Data
 ---------------------
@@ -217,7 +217,7 @@ summary(output)
 plot(output)
 ```
 
-![Fig4](https://raw.githubusercontent.com/kdonnay/geomergemaster/README_files/Fig4.png)
+![Fig4](https://raw.githubusercontent.com/kdonnay/geomerge/master/README_files/Fig4.png)
 
 ``` r
 # Run geomerge using point.agg = 'sum
@@ -237,7 +237,7 @@ summary(output)
 plot(output)
 ```
 
-![Fig5](https://raw.githubusercontent.com/kdonnay/geomergemaster/README_files/Fig5.png)
+![Fig5](https://raw.githubusercontent.com/kdonnay/geomerge/master/README_files/Fig5.png)
 
 Dynamic integration of `point` data follows the same process as before, but separated in a series of temporal units, thereby generating a spatial panel. In `geomerge`, the temporal units are specified through the `time` argument. The package performs static integration if `time = NA`. For dynamic integration, the user must specify `time = c(start_date, end_date, interval_length).` All three inputs must be `strings`, where `interval_length` is defined in multiples of `t_unit`. The default value is `t_unit = "days"`. The package also accepts inputs of “secs”, “mins”, “hours”, “months” or “years”.
 
@@ -265,7 +265,7 @@ plot(output)
 
     ## Output data is spatial panel, showing results only for the last period. Use optional argument "period" to select specific time period.
 
-![Fig6](https://raw.githubusercontent.com/kdonnay/geomergemaster/README_files/Fig6.png)
+![Fig6](https://raw.githubusercontent.com/kdonnay/geomerge/master/README_files/Fig6.png)
 
 ``` r
 # Run geomerge using point.agg = 'cnt
@@ -289,7 +289,7 @@ plot(output)
 
     ## Output data is spatial panel, showing results only for the last period. Use optional argument "period" to select specific time period.
 
-![Fig7](https://raw.githubusercontent.com/kdonnay/geomergemaster/README_files/Fig7.png)
+![Fig7](https://raw.githubusercontent.com/kdonnay/geomerge/master/README_files/Fig7.png)
 
 Note: By default, `plot` selects the last time period for purposes of the visualization. If the user wishes to visualize any other period, simply add the optional argument `period` to the function. Also, first- and second-order time-lagged variables are returned by default. The optional Boolean argument `time.lag` controls this feature.
 
@@ -313,7 +313,7 @@ plot(output, period=3)
 
     ## Output data is spatial panel, showing variables only for period 3, as specified.
 
-![Fig8](https://raw.githubusercontent.com/kdonnay/geomergemaster/README_files/Fig8.png)
+![Fig8](https://raw.githubusercontent.com/kdonnay/geomerge/master/README_files/Fig8.png)
 
 Generating Grid Target
 ---------------------
@@ -351,7 +351,7 @@ summary(output)
 plot(output)
 ```
 
-![Fig9](https://raw.githubusercontent.com/kdonnay/geomergemaster/README_files/Fig9.png)
+![Fig9](https://raw.githubusercontent.com/kdonnay/geomerge/master/README_files/Fig9.png)
 
 Meta
 ----
